@@ -1,40 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "outDir": "./dist/",
-    "lib": ["es2015", "es2016.array.include", "es2017.object"],
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "baseUrl": "./src",
-    "rootDirs": ["./src", "./@types"],
-	  "types": ["node"],
-    "typeRoots": ["./node_modules/@types", "./@types/**/*"],
-    "declaration": true,
-    "declarationDir": "dist",
-    "removeComments": true,
-    "allowUnreachableCode": false,
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
-    "noImplicitThis": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": false,
-    "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
-    "noEmit": false,
+    "skipLibCheck": true,
     "strict": true,
-    "alwaysStrict": false,
-    "strictNullChecks": true,
+    "noEmit": true,
     "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "sourceMap": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "@types/**/*"],
-  "exclude": ["node_modules", "./node_modules", "./node_modules/*"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
