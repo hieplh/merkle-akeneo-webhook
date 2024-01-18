@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npx prisma generate",
     "start": "next start",
-    "lint": "next lint",
-    "heroku-postbuild": "npx prisma generate && npx prisma migrate dev --name init"
+    "lint": "next lint"
   },
   "dependencies": {
     "@prisma/client": "^5.8.1",
