@@ -11,7 +11,7 @@ datasource db {
 model events {
   id            Int             @id @default(autoincrement())
   created_at    DateTime        @default(now())
-  content       String
+  content       String          @db.Text
   event_details event_details[]
 }
 
@@ -20,5 +20,5 @@ model event_details {
   created_at DateTime @default(now())
   event      events   @relation(fields: [event_id], references: [id])
   event_id   Int
-  content    String
+  content    String   @db.Text
 }
