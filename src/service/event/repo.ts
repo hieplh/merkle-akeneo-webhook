@@ -1,75 +1,44 @@
-import prisma from "@/lib/prisma";
+import connection from "@/lib/mysql";
 
 export async function countAllEvents() {
-  return await prisma.events.count();
+  return connection.promise().query("SELECT COUNT(*) as count FROM events");
 }
 
-export async function fetchAllEvents(
-  cursor: number | null,
-  page: number | null,
-  count: number,
-  skip: number
-) {
-  var cursorAndSkip = {};
-  if (cursor !== null) {
-    cursorAndSkip = {
-      skip: skip,
-      cursor: {
-        id: cursor,
-      },
-    };
-  } else if (page !== null) {
-    cursorAndSkip = {
-      skip: ((page > 0 ? page : 1) - 1) * count,
-    };
-  }
-
-  return await prisma.events
-    .findMany({
-      ...{
-        take: count,
-        orderBy: {
-          id: "desc",
-        },
-      },
-      ...cursorAndSkip,
-    })
-    .then((data: any) => {
-      data.forEach((e: any) => {
+export async function fetchAllEvents(page: number | null, count: number) {
+  return connection
+    .promise()
+    .execute("SELECT * FROM events ORDER BY id DESC LIMIT ? OFFSET ?", [
+      count,
+      ((page !== null && page > 0 ? page : 1) - 1) * count,
+    ])
+    .then(([rows, fields]) => {
+      (rows as any).forEach((e: any) => {
         e.content = JSON.parse(e.content);
       });
-      return data;
-    })
-    .catch((e: any) => {
-      throw e;
+      return [rows, fields];
     });
 }
 
 export async function fetchEvent(id: number) {
-  return await prisma.events
-    .findFirst({
-      where: {
-        id: id,
-      },
-    })
-    .then((data: any) => {
-      data.content = JSON.parse(data.content);
-      return data;
-    })
-    .catch((e: any) => {
-      throw e;
-    });
+  return connection.promise().query("SELECT * FROM events WHERE id = ?", [id]);
 }
 
 export async function createEvent(data: any) {
-  await prisma.events.create({
-    data: {
-      content: JSON.stringify(data),
-      event_details: {
-        create: data.events.map((e: any) => {
-          return { content: JSON.stringify(e) };
-        }),
-      },
-    },
-  });
+  return connection.query(
+    "INSERT INTO events (content) VALUES (?)",
+    [JSON.stringify(data)],
+    (err, res: any) => {
+      if (err) {
+        throw err;
+      }
+
+      data.events.forEach((e: any) => {
+        connection.query(
+          "INSERT INTO event_details (event_id, content) VALUES (?, ?)",
+          [res.insertId, JSON.stringify(e)]
+        );
+      });
+      return;
+    }
+  );
 }

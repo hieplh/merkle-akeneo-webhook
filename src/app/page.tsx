@@ -11,40 +11,18 @@ function calculateTotalPages(totalCount: number, itemsPerPage: number) {
 export default function GetAll() {
   const [pretty, setPretty] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pastPage, setPastPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [data, setData] = useState({} as { totalCount: number; events: any });
-  const [pastData, setPastData] = useState(
-    {} as { totalCount: number; events: any }
-  );
 
   useEffect(() => {
-    if (currentPage <= 1) {
-      fetch("/api")
-        .then((res: any) => res.json())
-        .then((data: any) => {
-          setData(data);
-          setTotalPages(
-            calculateTotalPages(data.totalCount, paginationConfig.count)
-          );
-        });
-    } else if (pastPage !== currentPage) {
-      const id =
-        pastPage > currentPage ? pastData.events[0].id : data.events[data.events.length - 1].id;
-      const skip = pastPage > currentPage ? 0 : 1;
-
-      fetch(`/api?cursor=${id}&skip=${skip}`)
-        .then((res: any) => res.json())
-        .then((res: any) => {
-          setPastData(data);
-          setData(res);
-          setTotalPages(
-            calculateTotalPages(res.totalCount, paginationConfig.count)
-          );
-        });
-    }
-
-    setPastPage(currentPage);
+    fetch(`/api?page=${currentPage}`)
+      .then((res: any) => res.json())
+      .then((data: any) => {
+        setData(data);
+        setTotalPages(
+          calculateTotalPages(data.totalCount, paginationConfig.count)
+        );
+      });
   }, [currentPage]);
 
   return (
