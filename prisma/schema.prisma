@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
+  provider = "mysql"
+  url = "mysql://0dfs2p4nxf72gfj0z2dg:pscale_pw_yFlbOtfJe6iStcVNb5U0ZkRxJI5Oz09GjMAYDZyAG7v@aws.connect.psdb.cloud/merkle_akeneo_webhook?sslaccept=strict"
   relationMode = "prisma"
 }
 
