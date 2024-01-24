@@ -1,5 +1,5 @@
 const paginationConfig = {
-    count: 5
+    count: 20
 }
 
 export default paginationConfig;
