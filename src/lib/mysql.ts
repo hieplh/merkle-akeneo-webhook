@@ -1,5 +1,24 @@
-import mysql from 'mysql2';
+import * as mysql2 from "mysql2-async";
 
-const connection = mysql.createPool(process.env.DATABASE_URL ?? "")
+export class Db {
+  private static instance: mysql2.default;
 
-export default connection;
+  private constructor() {}
+
+  public static getInstance(): mysql2.default {
+    if (!Db.instance) {
+      Db.instance = new mysql2.default({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_DATABASE_NAME,
+        charset: process.env.DATABASE_CHARSET,
+        ssl: {
+          rejectUnauthorized: true,
+        },
+      });
+    }
+
+    return Db.instance;
+  }
+}

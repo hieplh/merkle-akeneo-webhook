@@ -13,14 +13,11 @@ export async function GET(request: NextRequest) {
     const page =
       params.get("page") !== null ? Number(params.get("page")) : null;
 
-    const [totalCount] = await countAllEvents();
-    const [events] = await fetchAllEvents(
-      page,
-      paginationConfig.count,
-    );
+    const totalCount = await countAllEvents();
+    const events = await fetchAllEvents(page, paginationConfig.count);
     return NextResponse.json(
       {
-        totalCount: (totalCount as any)[0].count,
+        totalCount: totalCount,
         events: events,
       },
       {
